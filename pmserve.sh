@@ -1,2 +1,4 @@
-sudo /usr/local/bin/pm2 stop coesite3; sudo /usr/local/bin/pm2 delete coesite3; sudo /usr/local/bin/pm2 start app.js  --name coesite3; /usr/local/bin/pm2 monit
-
+sudo pm2 stop coesite4;
+sudo pm2 delete coesite4;
+sudo pm2 start app.js --name coesite4;
+sudo pm2 monit;

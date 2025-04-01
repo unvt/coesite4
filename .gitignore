@@ -3,5 +3,4 @@ package-lock.json
 node_modules
 key
 config/default.hjson
-esri/UniteStreetMapVector-open
 

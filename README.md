@@ -1,4 +1,4 @@
-# coesite3
+# coesite4
 vector tile server (onyx with Azure AD authentication) in development environment.  
 Please be advised that this repository is for a specific environment. Not for general use.
 
@@ -9,16 +9,16 @@ Compared with un-vector-tile-toolkit/coesite, this repository has following char
 4. Some functions, such as raster drawing test and story-telling, are removed to make the structure simple.
 
 ## environment
-I developed this nodejs server for Red Hat Enterprise Linux release 8.4.  
-Nodejs v16.13.1  
-npm 8.1.2  
-pm2 v4.5.0
+I developed this nodejs server for Red Hat Enterprise Linux release 9.5.  
+Nodejs v22.14.0
+npm 10.9.2
+pm2 v6.0.5
 
 
 ## install
 ```console
-git clone https://github.com/unvt/coesite3
-cd coesite3
+git clone https://github.com/unvt/coesite4
+cd coesite4
 npm install
 ```
 ## Run

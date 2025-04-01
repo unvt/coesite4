@@ -1,2 +1,1 @@
-pm2 reload --update-env coesite3
-
+sudo pm2 reload --update-env coesite4;

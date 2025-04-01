@@ -1,2 +1,2 @@
-sudo /usr/local/bin/pm2 stop coesite3; sudo /usr/local/bin/pm2 delete coesite3
-
+sudo pm2 stop coesite4;
+sudo pm2 delete coesite4;

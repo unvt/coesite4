@@ -1,5 +1,5 @@
 {
-  "name": "coesite3",
+  "name": "coesite4",
   "version": "0.0.0",
   "description": "A vector tile server",
   "main": "app.js",
@@ -8,37 +8,29 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unvt/coesite3.git"
+    "url": "git+https://github.com/unvt/coesite4.git"
   },
   "dependencies": {
-    "@azure/msal-node": "^1.3.0",
+    "@azure/msal-node": "^3.3.0",
     "@mapbox/mbtiles": "^0.12.1",
     "@microsoft/microsoft-graph-client": "^3.0.0",
     "config": "^3.3.6",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
-    "debug": "^4.3.1",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.4.7",
     "express": "^4.17.1",
-    "express-mysql-session": "^2.1.7",
+    "express-mysql-session": "^3.0.3",
     "express-promise-router": "^4.1.0",
     "express-session": "^1.17.2",
-    "express-validator": "^6.12.1",
-    "fs": "0.0.1-security",
     "hbs": "^4.1.2",
     "hh-mm-ss": "^1.2.0",
     "hjson": "^3.2.2",
-    "http-errors": "^1.8.0",
-    "https": "^1.0.0",
+    "http-errors": "^2.0.0",
     "isomorphic-fetch": "^3.0.0",
-    "moment": "^2.29.1",
-    "moment-timezone": "^0.5.31",
     "morgan": "^1.10.0",
     "spdy": "^4.0.2",
-    "uuid": "^8.3.1",
-    "windows-iana": "^5.0.2",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }

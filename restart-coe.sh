@@ -1,1 +1,4 @@
-cd /hoge/coesite3; /usr/local/bin/pm2 stop coesite3; /usr/local/bin/pm2 delete coesite3;/usr/local/bin/pm2 start app.js -i 1 --name coesite3
+cd /hoge/coesite4;
+sudo pm2 stop coesite4;
+sudo pm2 delete coesite4;
+sudo pm2 start app.js --name coesite4;

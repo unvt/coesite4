@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -5,8 +6,8 @@
 <meta charset='utf-8' />
 <title>Map test</title>
 <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-<script src='./maplibre-gl@2.4.0/maplibre-gl.js'></script>
-<link href='./maplibre-gl@2.4.0/maplibre-gl-r.css' rel='stylesheet' />
+<script src='./maplibre-gl@5.3.0/maplibre-gl.js'></script>
+<link href='./maplibre-gl@5.3.0/maplibre-gl.css' rel='stylesheet' />
 
 <style>
 body { margin:0; padding:0; }
@@ -20,7 +21,7 @@ body { margin:0; padding:0; }
 </head>
 
 <body>
-<div id='map'"></div>
+<div id="map"></div>
 
 <script>
 var map = new maplibregl.Map({
@@ -30,7 +31,7 @@ var map = new maplibregl.Map({
   style: './styles/style-std.json', // style file path
   center: [0,0], // center [lng, lat]
   zoom: 1, // zoom level at loading
-  maxZoom: 0, // min zoom
+  minZoom: 0, // min zoom
   maxZoom: 17 // max zoom
 });
 
