@@ -1,13 +1,13 @@
 <div class="jumbotron">
-  <h1>Unite Map powered by UN Vector Tile Toolkit.</h1>
+  <h1>UN Maps powered by UN Vector Tile Toolkit.</h1>
   <p class="lead">This server is build based on nodejs/express. Microsoft msal module is used for Azure AD authentication, and Mapbox mbtiles module is used for vector tile delivery from mbtiles.</p>
   <p class="lead">The United Nations Vector Tile Toolkit (UNVT) is a collection of Open Source Software (OSS) to produce, host, style and optimize vector tiles for web mapping.</p>
   {{#if user}}
     <h4>Welcome {{ user.displayName }}!</h4>
 
-    <h4>Map in Geoportal (Dev)</a></h4>
+    <h4>Map in Geoportal</a></h4>
     <ol>
-      <li><a href="">Link to the Geoportal (Please revise)</a>. please login to the geoportal as well.</li>
+      <li><a href="">Link to the Geoportal (Please revise)</a>.</li>
     </ol>
 
     <h4>Map APP in our page</h4>
@@ -17,10 +17,6 @@
       <li><a href="./webmap-3d">Web Map APP - 3D (Testing)</a> - with MapLibre version 5.3.0</li>
     </ol>
 
-    ESRI interface URL:<br>
-    <ol>
-      <li>https://dev-unvt.dfs.un.org/unvt/rest/services/esriIF/UniteStreetMapVector/VectorTileServer</li>
-    </ol>
 
   {{else}}
     <a href="auth/signin" class="btn btn-primary btn-large">Click here to sign in</a>
