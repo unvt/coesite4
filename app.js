@@ -48,12 +48,26 @@ logger.stream = {
 };
 // logger until here
 
+// Development mode settings
+const devMode = process.env.DEV_MODE === 'true';
+if (devMode) {
+  console.log('🔧 Development mode enabled - Authentication will be skipped');
+}
+
 var authRouter = require("./routes/auth"); //before app
 const app = express();
 // In-memory storage of logged-in users
-// For demo purposes only, production apps should store
+// we will use a simple in-memory array, but in a real app,
 // this in a reliable storage
 app.locals.users = {};
+
+// Setup dummy user for development mode
+if (devMode) {
+  const devUserId = 'dev-user-id';
+  app.locals.users[devUserId] = {
+    displayName: 'Development User'
+  };
+}
 
 // MSAL config
 const msalConfig = {
@@ -105,7 +119,8 @@ app.use(session({
 
 //session with mysql (from here)
 const mysqlOptions = {
-  host: "localhost",
+  // Enable to change the hostname of MySQL by environment variable
+  host: process.env.MYSQL_HOST || "localhost",
   port: 3306,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
@@ -125,6 +140,18 @@ app.use(session(sess));
 
 // Flash middleware
 app.use(flash());
+
+// Development mode auto-authentication middleware
+if (devMode) {
+  app.use(function (req, res, next) {
+    // In development mode, always set a dummy user ID in session
+    if (!req.session.userId) {
+      req.session.userId = 'dev-user-id';
+      console.log('🔑 Development mode: Auto-login performed');
+    }
+    next();
+  });
+}
 
 // Set up local vars for template layout
 app.use(function (req, res, next) {
@@ -200,20 +227,26 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-//for https
-spdy
-  .createServer(
-    {
-      key: fs.readFileSync(privkeyPath),
-      cert: fs.readFileSync(fullchainPath),
-    },
-    app
-  )
-  .listen(port);
+// Server startup
+// Toggle HTTP/HTTPS mode via environment variable
+const useHttp = process.env.USE_HTTP === 'true';
 
-//for http
-//app.listen(port, () => {
-//    console.log(`Running at Port ${port} ...`)
-//app.listen(3000, () => {
-//console.log("running at port 3000 ...")
-//})
+if (useHttp && fs.existsSync(privkeyPath) && fs.existsSync(fullchainPath)) {
+  // Start as HTTP server
+  app.listen(port, () => {
+    console.log(`HTTP server running at Port ${port} ...`);
+  });
+} else {
+  // Start as HTTPS server
+  spdy
+    .createServer(
+      {
+        key: fs.readFileSync(privkeyPath),
+        cert: fs.readFileSync(fullchainPath),
+      },
+      app
+    )
+    .listen(port, () => {
+      console.log(`HTTPS server running at Port ${port} ...`);
+    });
+}
