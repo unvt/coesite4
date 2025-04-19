@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+// Check if development mode is enabled
+const devMode = process.env.DEV_MODE === 'true';
+
 /* GET home page. */
 router.get('/', 
  async function(req, res, next) {
@@ -9,16 +12,20 @@ router.get('/',
     active: { home: true }
   };
 
- // Get the user
-    const user = req.app.locals.users[req.session.userId];
-// Get the access token
-   var accessToken;
+  // Get the user
+  const user = req.app.locals.users[req.session.userId];
+  
+  // Skip access token acquisition in development mode
+  if (!devMode) {
+    // Get the access token
+    var accessToken;
     try {
       accessToken = await getAccessToken(req.session.userId, req.app.locals.msalClient);
     } catch (err) {
       res.send(JSON.stringify(err, Object.getOwnPropertyNames(err)));
       return;
     }
+  }
 
   res.render('index', params);
 });
