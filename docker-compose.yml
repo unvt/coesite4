@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - OAUTH_CLIENT_ID=your_app_client_id
+      - OAUTH_CLIENT_SECRET=your_secret
+      - OAUTH_REDIRECT_URI=http://localhost:3000/unvt/auth/callback
+      - OAUTH_SCOPES=user.read
+      - OAUTH_AUTHORITY=https://login.microsoftonline.com/your_tenant_id/
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=coesite_user
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=coesite4_sessions
+      - USE_HTTP=true
+      - DEV_MODE=true
+    volumes:
+      - ./mbtiles:/app/mbtiles
+      - ./config:/app/config
+      - ./log:/app/log
+    depends_on:
+      - mysql
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=coesite4_sessions
+      - MYSQL_USER=coesite_user
+      - MYSQL_PASSWORD=password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
