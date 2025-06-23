@@ -124,6 +124,32 @@ router.get(`/zxy/:t/:z/:x/:y.pbf`,
   const x = parseInt(req.params.x)
   const y = parseInt(req.params.y)
 
+  // Input validation - Security enhancement to prevent path traversal and invalid tile requests
+  // Restrict tileset name to alphanumeric characters, hyphens, and underscores only
+  if (!t || typeof t !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(t)) {
+    res.status(400).send('Invalid tileset name')
+    busy = false
+    return
+  }
+  // Validate zoom level within reasonable bounds (0-30) to prevent resource exhaustion
+  if (isNaN(z) || z < 0 || z > 30) {
+    res.status(400).send('Invalid zoom level')
+    busy = false
+    return
+  }
+  // Validate X coordinate is within valid range for the zoom level
+  if (isNaN(x) || x < 0 || x >= Math.pow(2, z)) {
+    res.status(400).send('Invalid x coordinate')
+    busy = false
+    return
+  }
+  // Validate Y coordinate is within valid range for the zoom level
+  if (isNaN(y) || y < 0 || y >= Math.pow(2, z)) {
+    res.status(400).send('Invalid y coordinate')
+    busy = false
+    return
+  }
+
 
 if (!req.session.userId) {
   // Redirect unauthenticated requests to home page

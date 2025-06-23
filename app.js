@@ -81,10 +81,14 @@ const msalConfig = {
   system: {
     loggerOptions: {
       loggerCallback(loglevel, message, containsPii) {
-        console.log(message);
+        // Security enhancement: Prevent logging of PII (Personally Identifiable Information)
+        if (!containsPii) {
+          console.log(message);
+        }
       },
       piiLoggingEnabled: false,
-      logLevel: msal.LogLevel.Verbose,
+      // Security enhancement: Reduce log verbosity to Warning level to minimize sensitive data exposure
+      logLevel: msal.LogLevel.Warning,
     },
   },
 };
