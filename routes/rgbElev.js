@@ -71,6 +71,26 @@ router.get(`/zxy/:z/:x/:y.png`,
   const x = parseInt(req.params.x)
   const y = parseInt(req.params.y)
 
+  // Input validation - Security enhancement to prevent invalid tile requests
+  // Validate zoom level within reasonable bounds (0-30) to prevent resource exhaustion
+  if (isNaN(z) || z < 0 || z > 30) {
+    res.status(400).send('Invalid zoom level')
+    busy = false
+    return
+  }
+  // Validate X coordinate is within valid range for the zoom level
+  if (isNaN(x) || x < 0 || x >= Math.pow(2, z)) {
+    res.status(400).send('Invalid x coordinate')
+    busy = false
+    return
+  }
+  // Validate Y coordinate is within valid range for the zoom level
+  if (isNaN(y) || y < 0 || y >= Math.pow(2, z)) {
+    res.status(400).send('Invalid y coordinate')
+    busy = false
+    return
+  }
+
   getMBTiles(z, x, y).then(mbtiles => {
     getTile(mbtiles, z, x, y).then(r => {
       if (r.tile) {

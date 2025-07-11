@@ -119,22 +119,48 @@ const getTile = async (mbtiles, z, x, y) => {
 router.get(`/zxy/:t/:z/:x/:y.pbf`, 
  async function(req, res) {
   busy = true
-  const t = req.params.t
+  const tilesetName = req.params.t
   const z = parseInt(req.params.z)
   const x = parseInt(req.params.x)
   const y = parseInt(req.params.y)
+
+  // Input validation - Security enhancement to prevent path traversal and invalid tile requests
+  // Restrict tileset name to alphanumeric characters, hyphens, and underscores only
+  if (!tilesetName || typeof tilesetName !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(tilesetName)) {
+    res.status(400).send('Invalid tileset name')
+    busy = false
+    return
+  }
+  // Validate zoom level within reasonable bounds (0-30) to prevent resource exhaustion
+  if (isNaN(z) || z < 0 || z > 30) {
+    res.status(400).send('Invalid zoom level')
+    busy = false
+    return
+  }
+  // Validate X coordinate is within valid range for the zoom level
+  if (isNaN(x) || x < 0 || x >= Math.pow(2, z)) {
+    res.status(400).send('Invalid x coordinate')
+    busy = false
+    return
+  }
+  // Validate Y coordinate is within valid range for the zoom level
+  if (isNaN(y) || y < 0 || y >= Math.pow(2, z)) {
+    res.status(400).send('Invalid y coordinate')
+    busy = false
+    return
+  }
 
 
 if (!req.session.userId) {
   // Redirect unauthenticated requests to home page
    // res.redirect('/')
-    res.status(401).send(`Please log in to get: /zxy/${t}/${z}/${x}/${y}.pbf`)
+    res.status(401).send(`Please log in to get: /zxy/${tilesetName}/${z}/${x}/${y}.pbf`)
    // busy = false
     } else {
 //  let params = {
 //    active: { home: true }
 
-  getMBTiles(t, z, x, y).then(mbtiles => {
+  getMBTiles(tilesetName, z, x, y).then(mbtiles => {
     getTile(mbtiles, z, x, y).then(r => {
       if (r.tile) {
         res.set('content-type', 'application/vnd.mapbox-vector-tile')
@@ -144,15 +170,15 @@ if (!req.session.userId) {
         res.send(r.tile)
         busy = false
       } else {
-        res.status(404).send(`tile not found: /zxy/${t}/${z}/${x}/${y}.pbf`)
+        res.status(404).send(`tile not found: /zxy/${tilesetName}/${z}/${x}/${y}.pbf`)
         busy = false
       }
     }).catch(e => {
-      res.status(404).send(`tile not found (getTile error): /zxy/${t}/${z}/${x}/${y}.pbf`)
+      res.status(404).send(`tile not found (getTile error): /zxy/${tilesetName}/${z}/${x}/${y}.pbf`)
       busy = false
     })
   }).catch(e => {
-    res.status(404).send(`mbtiles not found for /zxy/${t}/${z}/${x}/${y}.pbf`)
+    res.status(404).send(`mbtiles not found for /zxy/${tilesetName}/${z}/${x}/${y}.pbf`)
   })
 
  };
