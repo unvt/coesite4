@@ -14,6 +14,7 @@
     "@azure/msal-node": "^3.3.0",
     "@mapbox/mbtiles": "^0.12.1",
     "@microsoft/microsoft-graph-client": "^3.0.0",
+    "axios": "^1.10.0",
     "config": "^3.3.6",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
@@ -29,6 +30,7 @@
     "http-errors": "^2.0.0",
     "isomorphic-fetch": "^3.0.0",
     "morgan": "^1.10.0",
+    "node-cache": "^5.1.2",
     "spdy": "^4.0.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^5.0.0"
