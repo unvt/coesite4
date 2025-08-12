@@ -119,7 +119,30 @@ const getTile = async (mbtiles, z, x, y) => {
 // Creating a token cache.
 // stdTTL is the cache expiration time (in seconds).
 // Expired data is cleaned up every 120 seconds.
-const tokenCache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
+const tokenCache = new NodeCache({ stdTTL: 30, checkperiod: 120 });
+const tokenIPSet = new Set(); // To record IP
+const ipTimeoutMap = new Map(); // IP → Timeout ID
+
+function addOrRefreshIP(ip, ttlMs = 60 * 1000) {
+  // If the IP is registered, remove it.
+  if (ipTimeoutMap.has(ip)) {
+    // console.log(`🔄 IP renew: ${ip}, ID: ${ipTimeoutMap.get(ip)}`);
+    clearTimeout(ipTimeoutMap.get(ip));
+  }
+
+  // Adding IP to Set
+  tokenIPSet.add(ip);
+  // console.log(`🌟 IP登録・更新: ${ip}`);
+
+  const timeoutId = setTimeout(() => {
+    tokenIPSet.delete(ip);
+    ipTimeoutMap.delete(ip);
+    // console.log(`💨 TTL切れでIP削除: ${ip}`);
+  }, ttlMs);
+
+  // Mapに保存（更新）
+  ipTimeoutMap.set(ip, timeoutId);
+}
 
 /* GET Tile. */
 //router.get('/',
@@ -130,6 +153,14 @@ router.get(`/zxy/:t/:z/:x/:y.pbf`, async function (req, res) {
   const z = parseInt(req.params.z);
   const x = parseInt(req.params.x);
   const y = parseInt(req.params.y);
+
+  const rawIP = req.socket?.remoteAddress;
+  const clientIP =
+    typeof rawIP === "string" && rawIP.startsWith("::ffff:")
+      ? rawIP.replace(/^::ffff:/, "")
+      : rawIP;
+  // console.log("✅rawIP: ", rawIP);
+  // console.log("✅clientIP: ", clientIP);
 
   let token = null;
   if (req.query && req.query.token) {
@@ -167,6 +198,8 @@ router.get(`/zxy/:t/:z/:x/:y.pbf`, async function (req, res) {
         // console.log('✅ generateToken response:', response.data);
         if (response.data && !response.data.error) {
           isTokenValid = true;
+          // tokenIPSet.add(clientIP);
+          addOrRefreshIP(clientIP); // ★ここでIP登録・更新
         }
       } catch (error) {
         isTokenValid = false;
@@ -187,14 +220,16 @@ router.get(`/zxy/:t/:z/:x/:y.pbf`, async function (req, res) {
     "https://ubukawa.github.io/cors-cookie",
     "https://dev-geoportal.dfs.un.org/",
   ];
-  const noSession = !req.session.userId;
+  const noSession = !req.session?.userId;
   const invalidReferer = !(
     req.headers.referer &&
     whiteList.some((value) => req.headers.referer.includes(value))
   );
   const invalidToken = !(token && isTokenValid);
+  const ipAllowed = !token && tokenIPSet.has(clientIP);
+  // console.log("✅tokenIPSet.has(clientIP): ", tokenIPSet.has(clientIP));
 
-  if (noSession && invalidReferer && invalidToken) {
+  if (noSession && invalidReferer && invalidToken && !ipAllowed) {
     // Redirect unauthenticated requests to home page
     // res.redirect('/')
     res.status(401).send(`Please log in to get: /zxy/${t}/${z}/${x}/${y}.pbf`);
