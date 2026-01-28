@@ -1,6 +1,6 @@
 {
   "name": "UNVT Test",
-  "copyrightText": "OpenStreetMap contributors, UN Geosptial",
+  "copyrightText": "OpenStreetMap contributors, UN Geospatial",
   "type": "indexedVector",
   "tileMap": "tilemap",
   "defaultStyles": "resources/styles",
